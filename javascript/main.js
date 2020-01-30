@@ -58,16 +58,20 @@ SoundCloudAPI.renderTracks = function(tracks) {
 
     var buttonText = document.createElement("span");
     buttonText.innerHTML = "Add to playlist";
-    buttonText.addEventListener("click", () => {
-      // 4. Add to playlist and play
-      SC.oEmbed(`${track.permalink_url}`, {
-        auto_play: true
-      }).then(function(embed) {
-        console.log("oEmbed response: ", embed);
+    // buttonText.addEventListener("click", () => {    ===> 1st Way
+    //   SC.oEmbed(`${track.permalink_url}`, {
+    //     auto_play: true
+    //   }).then(function(embed) {
+    //     console.log("oEmbed response: ", embed);
 
-        var sideBar = document.querySelector(".js-playlist");
-        sideBar.innerHTML = embed.html;
-      });
+    //     var sideBar = document.querySelector(".js-playlist");
+    //     sideBar.innerHTML = embed.html;
+    //   });
+    // });
+
+    // ===> 2nd Way
+    buttonText.addEventListener("click", () => {
+      SoundCloudAPI.getEmbed(track.permalink_url);
     });
 
     // appendChild
@@ -84,3 +88,21 @@ SoundCloudAPI.renderTracks = function(tracks) {
     searchResults.appendChild(card);
   });
 };
+
+// 4. Add to playlist and play
+SoundCloudAPI.getEmbed = trackLink => {
+  SC.oEmbed(`${trackLink}`, {
+    auto_play: true
+  }).then(function(embed) {
+    console.log("oEmbed response: ", embed);
+
+    var sideBar = document.querySelector(".js-playlist");
+    var box = document.createElement("div");
+    box.innerHTML = embed.html;
+    sideBar.insertBefore(box, sideBar.firstChild);
+    localStorage.setItem("key", sideBar.innerHTML);
+  });
+};
+
+var sideBar = document.querySelector(".js-playlist");
+localStorage.getItem("key");
