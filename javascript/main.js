@@ -23,12 +23,13 @@ SoundCloudAPI.getTrack = function(inputValue) {
 
 SoundCloudAPI.getTrack("Rody Rich");
 
+// 3. Display the cards
+
 SoundCloudAPI.renderTracks = function(tracks) {
   tracks.forEach(track => {
     // card
     var card = document.createElement("div");
     card.classList.add("card");
-    console.log(track);
     // image
     var imageDiv = document.createElement("div");
     imageDiv.classList.add("image");
@@ -46,7 +47,7 @@ SoundCloudAPI.renderTracks = function(tracks) {
 
     var header = document.createElement("div");
     header.classList.add("header");
-    header.innerHTML = `<a href=${track.permalink_url} target=" _blank">${track.title}</a>`;
+    header.innerHTML = `<a href =${track.permalink_url} target=" _blank">${track.title}</a>`;
 
     // button
     var button = document.createElement("div");
@@ -57,6 +58,17 @@ SoundCloudAPI.renderTracks = function(tracks) {
 
     var buttonText = document.createElement("span");
     buttonText.innerHTML = "Add to playlist";
+    buttonText.addEventListener("click", () => {
+      // 4. Add to playlist and play
+      SC.oEmbed(`${track.permalink_url}`, {
+        auto_play: true
+      }).then(function(embed) {
+        console.log("oEmbed response: ", embed);
+
+        var sideBar = document.querySelector(".js-playlist");
+        sideBar.innerHTML = embed.html;
+      });
+    });
 
     // appendChild
     content.appendChild(header);
@@ -72,7 +84,3 @@ SoundCloudAPI.renderTracks = function(tracks) {
     searchResults.appendChild(card);
   });
 };
-
-// 3. Display the cards
-
-// 4. Add to playlist and play
